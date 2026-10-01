@@ -51,20 +51,28 @@ it. The installer is per-user, so no administrator rights are required.
 
 ### macOS
 
-Download the `.dmg` from the
-[Releases page](https://github.com/apiwishboon-spec/pa-system/releases), drag
-the app to **Applications**, then open it.
-
-Unsigned builds are quarantined by Gatekeeper: right-click the app and choose
-**Open**, or run:
+macOS blocks self-update on unsigned apps, so updates are handled by a small
+install script that always fetches the newest release for you:
 
 ```bash
-xattr -dr com.apple.quarantine "/Applications/PA System.app"
+curl -fsSL https://raw.githubusercontent.com/apiwishboon-spec/pa-system/main/install-macos.sh | bash
 ```
 
-> **macOS auto-update requires a signed build.** Only signed, notarized apps can
-> self-update, so macOS installs are updated manually. Windows installs
-> auto-update.
+It finds the latest version on GitHub, downloads it, quits any running copy,
+replaces the app in `/Applications`, clears the quarantine flag, and offers to
+reopen it. Re-run it whenever you want to update — there is no version number
+to look up.
+
+You can also download the `.dmg` from the
+[Releases page](https://github.com/apiwishboon-spec/pa-system/releases) and drag
+the app to **Applications** by hand.
+
+Nothing is ever uninstalled: settings, schedules and your music library live in
+`~/Library/Application Support/pa-system` and are not touched by an update.
+
+> **Why not true auto-update?** macOS only lets a signed, notarized app replace
+> itself. PA System is unsigned, so this script stands in for the in-app
+> updater. Windows installs auto-update with no help at all.
 
 ---
 
@@ -101,7 +109,7 @@ Folder name determines the role. **Filenames do not matter.**
 media/library/
 ├── announcements/     PA Start / end / other spoken announcements
 │   ├── open.mp3       → played on PA Start
-│   └── end.mp3        → played on PA Finish
+│   └── end.mp3        → played on PA Finish (added by you, not the app)
 ├── bells/             scheduled bell chimes
 │   └── bell.mp3       → scheduled cues
 ├── emergency/         emergency alert
@@ -142,7 +150,7 @@ Updates are **never installed mid-announcement**. The download completes
 silently and the new version is applied on your next clean quit — from the tray
 menu, or at the next reboot. The app is never taken out from under a bell.
 
-Current version is in **Settings → About**, and every check is written to the
+Current version is shown in the app footer, and every check is written to the
 log so it can be verified:
 
 ```
@@ -151,7 +159,24 @@ autoupdate failed: ...
 ```
 
 A failed check on an unsigned macOS build disables the updater permanently
-rather than retrying hourly.
+rather than retrying hourly. On macOS, use `install-macos.sh` instead.
+
+### One command to update on macOS
+
+`install-macos.sh` is the whole installer. It is also safe to run when you are
+already on the latest version — it detects that and does nothing.
+
+```bash
+# check only, change nothing
+curl -fsSL https://raw.githubusercontent.com/apiwishboon-spec/pa-system/main/install-macos.sh -o pa-install.sh
+bash pa-install.sh
+```
+
+To install somewhere other than `/Applications` (useful for testing):
+
+```bash
+PA_INSTALL_DIR="$HOME/Applications" bash pa-install.sh
+```
 
 ### Releasing a new version
 
@@ -256,6 +281,7 @@ src/
 build/              icon.png, icon.icns, trayTemplate*.png
 media/library/      bundled audio
 scripts/            verify-media, selftest, smoke
+install-macos.sh    one-command macOS install and update
 ```
 
 ### Architecture notes
