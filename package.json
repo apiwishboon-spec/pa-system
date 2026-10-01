@@ -1,6 +1,6 @@
 {
   "name": "pa-system",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Offline school PA system: live announcements, bells, emergency alerts, background music and system-audio input.",

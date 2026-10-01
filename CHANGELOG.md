@@ -2,7 +2,18 @@
 
 All notable changes to PA System are documented here.
 
-## [0.2.0] — unreleased
+## [0.2.1] — 2026-10-01
+
+### Added
+- Separate volume control for the PA Start / PA Finish chimes (`volChime`,
+  default 0.55), on its own `chime` gain bus
+
+### Fixed
+- PA Start and PA Finish stings were riding the announcement bus at full level,
+  which read much louder than speech; existing configs pick up the quieter
+  default automatically with no migration
+
+## [0.2.0] — 2026-10-01
 
 ### Added
 - System-audio (loopback) input and line-in/device input selection
@@ -32,11 +43,3 @@ All notable changes to PA System are documented here.
 - Windows builds are unsigned: SmartScreen shows an "unknown publisher" warning
 - System-audio capture records the whole output device, so a line-in source is
   recommended to avoid feedback
-### Added
-- Separate volume control for the PA Start / PA Finish chimes (`volChime`,
-  default 0.55), on its own `chime` gain bus
-
-### Fixed
-- PA Start and PA Finish stings were riding the announcement bus at full level,
-  which read much louder than speech; existing configs pick up the quieter
-  default automatically with no migration
