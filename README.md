@@ -35,6 +35,25 @@ there is no zipper noise.
 Duck amount is adjustable in **Settings → BGM**, and can be turned off entirely
 to hard-cut instead.
 
+### Volume controls
+
+Each sound class has its own trim in **Settings → Volume**, because a single
+level never suits everything:
+
+| Control | Applies to | Default |
+|---|---|---|
+| Master (รวม) | everything | 0.9 |
+| Announcement (ประกาศ) | the bell and scheduled cues | 1.0 |
+| PA Start / Finish chime | the `open` / `close` stings | 0.55 |
+| Emergency (ฉุกเฉิน) | the panic alert | 0.8 |
+| Background music | the music bus | 0.35 |
+| Duck | how far music drops under a cue | 0.85 |
+
+The chime gets its own control on purpose. PA Start and PA Finish are short
+stings with a high peak level, so at the same nominal level as speech they
+read as much louder. If they are still too loud, lower the chime slider rather
+than the announcement slider, which would also soften the bell.
+
 ---
 
 ## Installation

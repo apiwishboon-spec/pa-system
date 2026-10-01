@@ -2,7 +2,7 @@ import type { Library, LibraryFile, Settings } from '@shared/types'
 
 export type InputKind = 'off' | 'loopback' | 'device'
 
-type Bus = 'announce' | 'emergency' | 'bgm' | 'tone' | 'input'
+type Bus = 'announce' | 'chime' | 'emergency' | 'bgm' | 'tone' | 'input'
 
 export type ToneKind = 'beep' | 'interval'
 
@@ -121,7 +121,7 @@ export class AudioEngine {
     this.inputDuckGain.gain.value = 1
     this.inputDuckGain.connect(this.master)
 
-    for (const bus of ['announce', 'emergency', 'bgm', 'tone', 'input'] as Bus[]) {
+    for (const bus of ['announce', 'chime', 'emergency', 'bgm', 'tone', 'input'] as Bus[]) {
       const g = ctx.createGain()
       if (bus === 'bgm') g.connect(this.bgmDuckGain)
       else if (bus === 'input') g.connect(this.inputDuckGain)
@@ -147,6 +147,7 @@ export class AudioEngine {
     }
     this.master.gain.setTargetAtTime(clamp01(s.master), t, 0.02)
     set('announce', s.volAnnounce)
+    set('chime', s.volChime)
     set('emergency', s.volEmergency)
     set('bgm', s.volBgm)
     set('tone', s.volAnnounce)
@@ -156,6 +157,9 @@ export class AudioEngine {
   private busFor(file: LibraryFile): Bus {
     if (file.kind === 'emergency') return 'emergency'
     if (file.kind === 'tone') return 'tone'
+    // PA Start and PA Finish are short stings with a high peak level, so they
+    // get their own trim instead of riding the speech bus.
+    if (file.kind === 'open' || file.kind === 'close') return 'chime'
     return 'announce'
   }
 

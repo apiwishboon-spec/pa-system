@@ -61,6 +61,7 @@ export function SettingsPanel({
       <h3>ระดับเสียง (Volume)</h3>
       <Slider label="รวม (Master)" value={settings.master} onChange={(v) => onPatch({ master: v })} />
       <Slider label="ประกาศ (Announcement)" value={settings.volAnnounce} onChange={(v) => onPatch({ volAnnounce: v })} />
+      <Slider label="เสียงเปิด-ปิด (PA Start / Finish chime)" value={settings.volChime} onChange={(v) => onPatch({ volChime: v })} />
       <Slider label="ฉุกเฉิน (Emergency)" value={settings.volEmergency} onChange={(v) => onPatch({ volEmergency: v })} />
       <Slider label="ลดเสียงพื้นหลังตอนประกาศ (Duck)" value={settings.bgmDuck} onChange={(v) => onPatch({ bgmDuck: v })} />
 

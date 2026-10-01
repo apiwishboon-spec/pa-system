@@ -45,6 +45,9 @@ export interface Settings {
   outputDeviceId: string | null
   master: number
   volAnnounce: number
+  /** PA Start / PA Finish chimes, kept separate because they are short stings
+   *  that read much louder than speech at the same nominal level */
+  volChime: number
   volEmergency: number
   volBgm: number
   /** live input from another app or a line-in feed */
@@ -101,6 +104,7 @@ export const DEFAULT_SETTINGS: Settings = {
   outputDeviceId: null,
   master: 0.9,
   volAnnounce: 1.0,
+  volChime: 0.55,
   volEmergency: 0.8,
   volBgm: 0.35,
   volInput: 0.8,

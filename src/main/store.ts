@@ -35,6 +35,7 @@ function sanitise(s: Settings): Settings {
     outputDeviceId: typeof s.outputDeviceId === 'string' ? s.outputDeviceId : null,
     master: clamp01(s.master),
     volAnnounce: clamp01(s.volAnnounce),
+    volChime: clamp01(s.volChime),
     volEmergency: clamp01(s.volEmergency),
     volBgm: clamp01(s.volBgm),
     volInput: clamp01(s.volInput),
