@@ -2,7 +2,7 @@
 
 All notable changes to PA System are documented here.
 
-## [Unreleased]
+## [0.2.3] — 2026-10-01
 
 ### Added
 - Dashboard as the landing page: ready/setup banner, next scheduled cue, now
@@ -21,6 +21,14 @@ All notable changes to PA System are documented here.
   which made it look like a speaker problem rather than a code one.
 - Audio decode failures are now written to the app log instead of only the
   devtools console, so a broken file is visible when reporting a problem
+- Tray "Pause schedule" saved the change to disk but never updated the in-memory
+  settings, so the scheduler kept running and the checkbox reverted on reopen
+- Packaged Windows builds had no window icon: the path pointed inside the asar at
+  `build/icon.png`, which `build.files` excludes. It now ships as an
+  extraResource
+- The release workflow uploaded the installer and DMG without their `.blockmap`
+  files while the publish step required them, so a tag-triggered release would
+  have failed after the build succeeded
 
 ## [0.2.2] — 2026-10-01
 
