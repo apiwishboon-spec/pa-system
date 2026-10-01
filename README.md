@@ -6,6 +6,8 @@ Live announcements, scheduled bells, emergency alerts, background music, and
 system-audio input — from one tray-resident desktop app that works without a
 network connection.
 
+Provided for use by **Sirindhorn Planetarium Suankularb Wittayalai School**.
+
 Copyright © 2026 **Apiwish Anutaravanichkul**. Released under the
 [MIT License](LICENSE).
 
@@ -357,10 +359,13 @@ verify:media` and `npm run selftest` first.
 
 MIT © 2026 Apiwish Anutaravanichkul — see [LICENSE](LICENSE).
 
-The PA System name, logo and bundled media are the property of their
-respective owners. Bundled audio in `media/library/` is included for
-convenience; replace it with your own recordings before using this in a real
-deployment.
+The PA System name and logo are the property of their respective owners.
+Bundled audio in `media/library/` is included for convenience; replace it with
+your own recordings before deploying.
+
+Attribution: the copyright holder grants the MIT permission; Sirindhorn
+Planetarium Suankularb Wittayalai School is credited as the deploying
+organisation in the app footer and installer metadata.
 ---
 
 ## Repository layout on GitHub

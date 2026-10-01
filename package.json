@@ -1,6 +1,6 @@
 {
   "name": "pa-system",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "type": "module",
   "description": "Offline school PA system: live announcements, bells, emergency alerts, background music and system-audio input.",
@@ -53,7 +53,8 @@
           ]
         }
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "publisherName": "Sirindhorn Planetarium Suankularb Wittayalai School"
     },
     "nsis": {
       "artifactName": "PA-System-Setup-${version}.${ext}",
@@ -87,7 +88,8 @@
         "owner": "apiwishboon-spec",
         "repo": "pa-system"
       }
-    ]
+    ],
+    "copyright": "Copyright (c) 2026 Apiwish Anutaravanichkul"
   },
   "author": {
     "name": "Apiwish Anutaravanichkul",

@@ -2,6 +2,16 @@
 
 All notable changes to PA System are documented here.
 
+## [0.2.2] — 2026-10-01
+
+### Added
+- School attribution in the app footer: Sirindhorn Planetarium Suankularb
+  Wittayalai School
+- School name in the Windows installer publisher metadata, and a "Provided for
+  use by" line in the LICENSE and README
+
+Copyright holder is unchanged: Apiwish Anutaravanichkul, MIT License.
+
 ## [0.2.1] — 2026-10-01
 
 ### Added

@@ -462,3 +462,25 @@ input[type='range'] {
   font-size: 11px;
   user-select: text;
 }
+
+/* The school is the deploying organisation, so it leads the footer and stays
+ * legible even at a glance from across a desk. */
+.foot-school {
+  font-weight: 600;
+  color: rgba(127, 127, 127, 1);
+}
+
+.foot-meta {
+  text-align: right;
+}
+
+@media (width <= 720px) {
+  .foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .foot-meta {
+    text-align: left;
+  }
+}

@@ -337,8 +337,12 @@ export function App() {
       </main>
 
       <footer className="foot">
-        <span>PA System v{version} © 2026 Apiwish Anutaravanichkul</span>
-        <span>MIT License</span>
+        <span className="foot-school">
+          Sirindhorn Planetarium Suankularb Wittayalai School
+        </span>
+        <span className="foot-meta">
+          PA System v{version} &middot; &copy; 2026 Apiwish Anutaravanichkul &middot; MIT License
+        </span>
       </footer>
     </div>
   )
