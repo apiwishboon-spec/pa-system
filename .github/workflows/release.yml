@@ -60,6 +60,7 @@ jobs:
           name: windows
           path: |
             release/PA-System-Setup-*.exe
+            release/PA-System-Setup-*.exe.blockmap
             release/latest.yml
           if-no-files-found: error
 
@@ -84,6 +85,7 @@ jobs:
           name: macos
           path: |
             release/*.dmg
+            release/*.dmg.blockmap
             release/latest-mac.yml
           if-no-files-found: error
 

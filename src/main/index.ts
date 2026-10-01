@@ -193,7 +193,9 @@ function refreshTrayMenu(): void {
         type: 'checkbox',
         checked: settings.schedulePaused === true,
         click: (item) => {
-          saveSettings({ ...settings, schedulePaused: item.checked })
+          // Reassign: scheduler.update() reads the in-memory copy, so saving
+          // without updating it left the tray toggle looking broken.
+          settings = saveSettings({ ...settings, schedulePaused: item.checked })
           scheduler.update(settings)
           appendLog('info', `schedule paused=${item.checked}`)
           refreshTrayMenu()
@@ -220,7 +222,11 @@ function createWindow(): void {
     minHeight: 600,
     backgroundColor: '#0d1117',
     // Windows/Linux use the window icon; macOS takes the icon from the bundle.
-    icon: path.join(app.getAppPath(), 'build', 'icon.png'),
+    // Packaged builds ship build/icon.png as an extraResource, so it sits
+    // beside the app rather than inside the asar where build.files excludes it.
+    icon: app.isPackaged
+      ? path.join(process.resourcesPath, 'icon.png')
+      : path.join(app.getAppPath(), 'build', 'icon.png'),
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
