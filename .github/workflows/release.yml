@@ -1,0 +1,108 @@
+name: release
+
+# Publishing is driven by a version tag, so the artifacts that go on a GitHub
+# Release are always produced by CI and never depend on one person's laptop.
+# Every auto-updating build is unsigned, so macOS self-update stays off; the
+# DMG is still published for manual install.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Verify media layout
+        run: npm run verify:media
+      - name: Build
+        run: npm run build
+      - name: Self-test
+        run: node scripts/selftest.mjs
+      - name: Smoke test
+        run: node scripts/smoke.mjs 8
+
+  windows:
+    name: Windows installer
+    needs: verify
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Package NSIS installer
+        run: npx electron-builder --win --x64 --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            release/PA-System-Setup-*.exe
+            release/latest.yml
+          if-no-files-found: error
+
+  macos:
+    name: macOS disk image
+    needs: verify
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Signing is skipped: no Developer ID certificate is configured. A
+      # signed build is required before macOS can self-update.
+      - name: Package DMG
+        run: npx electron-builder --mac --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: |
+            release/*.dmg
+            release/latest-mac.yml
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: [verify, windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: List downloaded artifacts
+        run: find dist -type f | sort
+
+      # The updater needs latest.yml, the installer and its .blockmap on the
+      # Release. Uploading only the .exe would not trigger an update.
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/windows/*.exe
+            dist/windows/*.blockmap
+            dist/windows/latest.yml
+            dist/macos/*.dmg
+            dist/macos/latest-mac.yml
+          generate_release_notes: true
+          draft: false
+          prerelease: false

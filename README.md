@@ -160,19 +160,28 @@ npm version patch          # or minor / major
 npm run dist               # builds the Windows installer + update metadata
 ```
 
-Push the tag, then publish the generated artifacts:
+Push the tag. The [release workflow](.github/workflows/release.yml) then runs
+the full test suite, builds both installers, and publishes everything:
 
 ```bash
+git tag v0.3.0 && git push origin v0.3.0
+```
+
+Three files are required on the Release. `latest.yml` is the manifest that
+tells installed copies a newer version exists; the `.blockmap` enables partial
+downloads; the `.exe` is the installer. Uploading only the `.exe` will not
+trigger an update.
+
+To publish by hand instead:
+
+```bash
+npm run dist
 gh release create v0.3.0 \
   release/PA-System-Setup-0.3.0.exe \
   release/PA-System-Setup-0.3.0.exe.blockmap \
   release/latest.yml \
-  --title "v0.3.0" --generate-notes
+  --generate-notes
 ```
-
-All three files are required. `latest.yml` is the manifest that tells installed
-copies a newer version exists; the `.blockmap` enables partial downloads.
-Uploading only the `.exe` will not trigger an update.
 
 ---
 
@@ -307,3 +316,16 @@ The PA System name, logo and bundled media are the property of their
 respective owners. Bundled audio in `media/library/` is included for
 convenience; replace it with your own recordings before using this in a real
 deployment.
+---
+
+## Repository layout on GitHub
+
+```
+main/          source, MIT licensed
+Actions/       CI runs verify + build on every push and PR
+Releases/      installers and update metadata, one release per version
+Issues         bug reports and feature requests
+```
+
+Releases are produced by CI from a version tag, not from a local machine, so
+every published artifact is reproducible and tested.
