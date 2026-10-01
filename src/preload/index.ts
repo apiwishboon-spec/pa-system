@@ -24,6 +24,12 @@ const api = {
   rescan: (): void => api.send({ type: 'library-rescan' }),
   revealMedia: (): void => api.send({ type: 'reveal-media' }),
 
+  getLogs: (): Promise<{ level: 'info' | 'warn' | 'error'; message: string; at: number }[]> =>
+    ipcRenderer.invoke('pa:logs:recent'),
+  revealLog: (): void => {
+    void ipcRenderer.invoke('pa:logs:reveal')
+  },
+
   send: (msg: ToMain): void => ipcRenderer.send('pa:msg', msg),
   on: (handler: (msg: FromMain) => void): (() => void) => {
     const listener = (_e: unknown, msg: FromMain): void => handler(msg)

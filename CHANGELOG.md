@@ -2,6 +2,26 @@
 
 All notable changes to PA System are documented here.
 
+## [Unreleased]
+
+### Added
+- Dashboard as the landing page: ready/setup banner, next scheduled cue, now
+  playing, schedule state, input source, music state, audio-file completeness
+- Activity log on the dashboard, newest at the bottom, with a button to open the
+  log folder
+- `npm run verify:paths`, which checks `pa-media://` path resolution on Windows,
+  macOS and Linux
+- Self-test now runs on the Windows CI job, not only on macOS
+
+### Fixed
+- **Windows: all cues were silent.** A `pa-media://` URL pathname always starts
+  with `/`, but a Windows absolute path begins with a drive letter, so
+  `path.resolve` produced `\C:\C:\...` and every lookup 404'd. The test tone
+  still worked because it is synthesised in Web Audio and never reads a file,
+  which made it look like a speaker problem rather than a code one.
+- Audio decode failures are now written to the app log instead of only the
+  devtools console, so a broken file is visible when reporting a problem
+
 ## [0.2.2] — 2026-10-01
 
 ### Added

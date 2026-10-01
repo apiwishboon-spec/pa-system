@@ -27,7 +27,27 @@ Copyright © 2026 **Apiwish Anutaravanichkul**. Released under the
 | **Auto-update** | Checks GitHub Releases hourly, installs on next quit |
 | **Start at login** | Launches hidden to the tray so a schedule survives a reboot |
 
-### Audio behaviour
+### Dashboard
+
+The first page is a status readout, so it answers "is this ready?" without any
+interaction:
+
+- a **ready / needs-setup** banner, naming any missing audio file
+- **next scheduled cue** with its time and whether it is today or tomorrow
+- **now playing**, including live mic, emergency, test tone and BGM states
+- **schedule** running or paused, with the bell count
+- **input** source, flagging loopback's feedback risk
+- **music** on or off
+- **audio files** complete or short
+- an **activity log**, newest at the bottom, with a button to open the log
+  folder
+
+Every card is a link to the tab that owns that setting, so the dashboard is a
+launchpad rather than a dead summary. Nothing on this page mutates settings:
+an accidental tap cannot pause the schedule or cut a live announcement. The PA
+console stays above it on every tab.
+
+## Audio behaviour
 
 Every announcement applies **ducking**: background music and the input source
 are faded down rather than cut, then restored afterwards. All fades are
@@ -244,6 +264,7 @@ npm run dev
 | `npm run build` | Compile main, preload and renderer to `out/` |
 | `npm run typecheck` | Type-check both TS projects |
 | `npm run verify:media` | Validate media layout and required slots |
+| `npm run verify:paths` | Check `pa-media://` path resolution on every platform |
 | `npm run selftest` | Headless renderer + audio self-test |
 | `npm run smoke` | Launch the built app and confirm it stays alive |
 | `npm run dist` | Build the Windows NSIS installer |

@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { engine, AudioEngine, type ToneKind } from './audio/engine'
 import { Console, NowPlaying } from './components/Console'
+import { Dashboard, type LogLine } from './components/Dashboard'
 import { InputPanel } from './components/InputPanel'
 import { MusicPanel } from './components/MusicPanel'
 import { SchedulePanel } from './components/SchedulePanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import type { AnnouncementKind, FromMain, Library, OutputDevice, Settings } from '@shared/types'
 
-type Tab = 'input' | 'music' | 'schedule' | 'settings'
+type Tab = 'dash' | 'input' | 'music' | 'schedule' | 'settings'
 
 const EMPTY: Library = { files: [], missing: [], scannedAt: 0 }
 
@@ -15,7 +16,7 @@ export function App() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [library, setLibrary] = useState<Library>(EMPTY)
   const [devices, setDevices] = useState<OutputDevice[]>([])
-  const [tab, setTab] = useState<Tab>('input')
+  const [tab, setTab] = useState<Tab>('dash')
   const [nowPlaying, setNowPlaying] = useState<string | null>(null)
   const [emergencyOn, setEmergencyOn] = useState(false)
   const [speaking, setSpeaking] = useState(false)
@@ -26,6 +27,7 @@ export function App() {
   const [banner, setBanner] = useState<string | null>(null)
   const [sinkFailed, setSinkFailed] = useState(false)
   const [version, setVersion] = useState('')
+  const [logs, setLogs] = useState<LogLine[]>([])
   const emergencyRef = useRef(false)
   const speakRef = useRef(false)
 
@@ -33,15 +35,17 @@ export function App() {
   useEffect(() => {
     let alive = true
     void (async () => {
-      const [s, l, v] = await Promise.all([
+      const [s, l, v, recent] = await Promise.all([
         window.pa.getSettings(),
         window.pa.getLibrary(),
         window.pa.getVersion(),
+        window.pa.getLogs(),
       ])
       if (!alive) return
       setSettings(s)
       setLibrary(l)
       setVersion(v)
+      setLogs(recent)
       setDevices(await AudioEngine.listOutputs())
     })()
     return () => {
@@ -81,6 +85,10 @@ export function App() {
       if (msg.type === 'settings') setSettings(msg.settings)
       else if (msg.type === 'library') setLibrary(msg.library)
       else if (msg.type === 'devices') setDevices(msg.devices)
+      else if (msg.type === 'log') {
+        // Bounded: a long shift should not grow this without limit.
+        setLogs((prev) => [...prev, { level: msg.level, message: msg.message, at: msg.at }].slice(-200))
+      }
       else if (msg.type === 'cue') {
         if (msg.kind === 'open' || msg.kind === 'classEnd' || msg.kind === 'emergency') {
           void runCueRef.current(msg.kind, msg.source === 'manual')
@@ -293,6 +301,7 @@ export function App() {
       <nav className="tabs">
         {(
           [
+            ['dash', 'ภาพรวม Dashboard'],
             ['input', 'เสียงเข้า Input'],
             ['music', 'เพลง Music'],
             ['schedule', 'ตารางเวลา Schedule'],
@@ -306,6 +315,27 @@ export function App() {
       </nav>
 
       <main>
+        {tab === 'dash' && settings && (
+          <Dashboard
+            settings={settings}
+            library={library}
+            nowPlaying={nowPlaying}
+            speaking={speaking}
+            emergencyOn={emergencyOn}
+            toneOn={toneOn}
+            schedulePaused={settings.schedulePaused}
+            bgmOn={settings.bgmEnabled && settings.bgmTrack !== null}
+            inputLabel={
+              settings.inputKind === 'off'
+                ? 'ไม่ได้ต่อ (off)'
+                : settings.inputKind === 'loopback'
+                  ? 'เสียงระบบ (system)'
+                  : 'อุปกรณ์ (device)'
+            }
+            onGo={setTab}
+            logs={logs}
+          />
+        )}
         {tab === 'input' && (
           <InputPanel
             settings={settings}

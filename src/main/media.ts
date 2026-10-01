@@ -38,11 +38,26 @@ function allowedRoots(): string[] {
   return [bundledRoot(), userRoot()]
 }
 
+/**
+ * Turn a pa-media:// URL pathname into an absolute filesystem path.
+ *
+ * A URL always begins with "/", but on Windows an absolute path looks like
+ * "\C:\Users\...", so a naive resolve() produces "\C:\C:\Users\..." and every
+ * lookup 404s. That silently muted all cues on Windows while the test tone kept
+ * working, because the tone is synthesised in Web Audio and never touches disk.
+ */
+function resolveMediaPath(pathname: string): string {
+  if (process.platform === 'win32' && /^\/[a-zA-Z]:/.test(pathname)) {
+    return path.resolve(pathname.slice(1))
+  }
+  return path.resolve(pathname)
+}
+
 export function handleMediaProtocol(): void {
   protocol.handle(SCHEME, async (request) => {
     try {
       const url = new URL(request.url)
-      const target = path.resolve(decodeURIComponent(url.pathname))
+      const target = resolveMediaPath(decodeURIComponent(url.pathname))
       const ok = allowedRoots().some((root) => {
         const rel = path.relative(root, target)
         return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel))

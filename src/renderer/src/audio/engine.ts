@@ -189,6 +189,9 @@ export class AudioEngine {
       this.cache.set(file.url, buf)
       return buf
     } catch (err) {
+      // Surfaced in the app log, not just devtools: a missing or unsupported
+      // file otherwise looks like "the button did nothing".
+      this.log('error', `decode failed ${file.name}: ${String(err)}`)
       console.error('decode failed', file.name, err)
       return null
     }

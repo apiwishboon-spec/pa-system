@@ -27,6 +27,8 @@ jobs:
         run: npm run typecheck
       - name: Verify media layout
         run: npm run verify:media
+      - name: Verify media path resolution
+        run: npm run verify:paths
       - name: Build
         run: npm run build
       - name: Self-test
@@ -46,6 +48,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Run on Windows deliberately: pa-media:// path handling is platform
+      # specific, and a Windows-only regression once muted every cue while the
+      # macOS job stayed green.
+      - name: Self-test on Windows
+        run: node scripts/selftest.mjs
       - name: Package NSIS installer
         run: npx electron-builder --win --x64 --publish never
       - uses: actions/upload-artifact@v4

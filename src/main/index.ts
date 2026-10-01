@@ -18,7 +18,7 @@ import AutoLaunch from 'auto-launch'
 // electron-updater ships CommonJS, so a named ESM import fails at load time.
 import electronUpdater from 'electron-updater'
 import { isDev, rendererDir } from './env'
-import { appendLog, flushSettings, loadSettings, saveSettings, settingsPath } from './store'
+import { appendLog, flushSettings, loadSettings, saveSettings, settingsPath, tailLog } from './store'
 import { handleMediaProtocol, registerSchemePrivileges, scanLibrary, bundledRoot, userRoot, toUrl } from './media'
 import { Scheduler } from './scheduler'
 import { isAudio, type FromMain, type Settings, type ToMain } from '../shared/types'
@@ -339,6 +339,15 @@ ipcMain.handle('pa:settings:save', (_e, patch: Partial<Settings>) => {
 
 ipcMain.handle('pa:log', (_e, level: 'info' | 'warn' | 'error', message: string) => {
   appendLog(level, message)
+  win?.webContents.send('pa:msg', { type: 'log', level, message, at: Date.now() })
+})
+
+ipcMain.handle('pa:logs:recent', () => tailLog())
+
+ipcMain.handle('pa:logs:reveal', () => {
+  const dir = path.join(app.getPath('userData'), 'logs')
+  fs.mkdirSync(dir, { recursive: true })
+  shell.openPath(dir)
 })
 
 ipcMain.handle('pa:library:get', () => library)

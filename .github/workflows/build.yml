@@ -22,6 +22,8 @@ jobs:
         run: npm run typecheck
       - name: Verify media logic
         run: npm run verify:media
+      - name: Verify media path resolution
+        run: npm run verify:paths
       - name: Build
         run: npm run build
 
@@ -40,6 +42,11 @@ jobs:
         run: npm run build
       - name: Package NSIS installer
         run: npx electron-builder --win --x64 --publish never
+      # This has to run on Windows, not just macOS: the pa-media:// path
+      # resolution is platform-specific and shipped a Windows-only regression
+      # that made every cue silent while the test tone still worked.
+      - name: Self-test (media protocol + renderer decode)
+        run: node scripts/selftest.mjs
       - name: Smoke test the packaged app
         shell: cmd
         run: |

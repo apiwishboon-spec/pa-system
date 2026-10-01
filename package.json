@@ -13,7 +13,8 @@
     "verify:media": "node scripts/verify-media.ts",
     "smoke": "npm run build && node scripts/smoke.mjs 8",
     "selftest": "npm run build && node scripts/selftest.mjs",
-    "dist": "npm run build && electron-builder --win --publish never"
+    "dist": "npm run build && electron-builder --win --publish never",
+    "verify:paths": "node scripts/verify-media-paths.ts"
   },
   "dependencies": {
     "auto-launch": "^5.0.6",

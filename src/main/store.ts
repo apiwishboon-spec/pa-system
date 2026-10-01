@@ -91,6 +91,23 @@ export function flushSettings(): void {
   }
 }
 
+/** Newest-last tail of today's log, for a fresh window that has no live feed. */
+export function tailLog(limit = 40): { level: 'info' | 'warn' | 'error'; message: string; at: number }[] {
+  try {
+    const dir = path.join(app.getPath('userData'), 'logs')
+    const day = new Date().toISOString().slice(0, 10)
+    const text = fs.readFileSync(path.join(dir, `${day}.log`), 'utf8')
+    const out: { level: 'info' | 'warn' | 'error'; message: string; at: number }[] = []
+    for (const line of text.split('\n')) {
+      const m = /^(\S+) \[(\w+)] (.*)$/.exec(line)
+      if (m) out.push({ at: Date.parse(m[1]), level: m[2] as 'info' | 'warn' | 'error', message: m[3] })
+    }
+    return out.slice(-limit)
+  } catch {
+    return []
+  }
+}
+
 export function appendLog(level: 'info' | 'warn' | 'error', message: string): void {
   try {
     const dir = path.join(app.getPath('userData'), 'logs')
