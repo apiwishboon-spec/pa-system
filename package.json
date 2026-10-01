@@ -40,6 +40,7 @@
       "output": "release"
     },
     "files": [
+      "LICENSE",
       "out/**/*",
       "media/**/*",
       "package.json"
@@ -54,13 +55,15 @@
         }
       ],
       "icon": "build/icon.png",
-      "publisherName": "Sirindhorn Planetarium Suankularb Wittayalai School"
+      "legalTrademarks": "Sirindhorn Planetarium Suankularb Wittayalai School"
     },
     "nsis": {
       "artifactName": "PA-System-Setup-${version}.${ext}",
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "PA System",
+      "menuCategory": "Sirindhorn Planetarium SWA School"
     },
     "mac": {
       "target": [
