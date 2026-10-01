@@ -1,0 +1,54 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Verify (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Verify media logic
+        run: npm run verify:media
+      - name: Build
+        run: npm run build
+
+  installer:
+    name: Windows installer
+    needs: verify
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Package NSIS installer
+        run: npx electron-builder --win --x64 --publish never
+      - name: Smoke test the packaged app
+        shell: cmd
+        run: |
+          dir release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PA-System-Setup
+          path: |
+            release/*Setup*.exe
+            release/*.blockmap
+          if-no-files-found: error
+          retention-days: 30
