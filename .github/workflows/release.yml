@@ -111,6 +111,7 @@ jobs:
             dist/windows/*.blockmap
             dist/windows/latest.yml
             dist/macos/*.dmg
+            dist/macos/*.dmg.blockmap
             dist/macos/latest-mac.yml
           generate_release_notes: true
           draft: false

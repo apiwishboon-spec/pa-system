@@ -102,7 +102,26 @@ curl -fsSL https://raw.githubusercontent.com/apiwishboon-spec/pa-system/main/ins
 It finds the latest version on GitHub, downloads it, quits any running copy,
 replaces the app in `/Applications`, clears the quarantine flag, and offers to
 reopen it. Re-run it whenever you want to update — there is no version number
-to look up.
+to look up. If the copy you already have is current, it says so and stops
+without downloading anything.
+
+```
+  PA System · macOS installer
+────────────────────────────────────────────────────────────
+
+[1] Looking up the latest release
+    ✓ latest release is v0.2.3
+
+[2] Checking what is installed
+    ✓ PA System 0.2.3 is installed
+
+  Already up to date.  v0.2.3
+────────────────────────────────────────────────────────────
+```
+
+Progress steps are numbered, slow operations get a spinner, and colour is dropped
+automatically when the output is not a terminal. Set `PA_INSTALL_DIR` to install
+somewhere other than `/Applications`, or `PA_NO_LAUNCH=1` to skip the prompt.
 
 You can also download the `.dmg` from the
 [Releases page](https://github.com/apiwishboon-spec/pa-system/releases) and drag
